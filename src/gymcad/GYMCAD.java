@@ -323,11 +323,9 @@ public class GYMCAD {
     public int insertarCliente(Cliente cliente) throws ExcepcionGYM{
         GYMCAD gym = new GYMCAD();
         conectar();
-        String llamada = "call insertar_cliente(?,?,?,?,?,?);";
+        String llamada = "call insertar_cliente(?, ?, ?, ?, ?, ?)";
         CallableStatement sentenciaLlamable;
         
-        Gimnasio gim = new Gimnasio();
-        gim = cliente.getGimnasio();
         
         try {
             
@@ -337,7 +335,7 @@ public class GYMCAD {
             sentenciaLlamable.setString(3, cliente.getApellido2());
             sentenciaLlamable.setString(4, cliente.getDni());
             sentenciaLlamable.setString(5, cliente.getEmailCliente());
-            sentenciaLlamable.setObject(6, gim.getGymId(), Types.INTEGER);
+            sentenciaLlamable.setObject(6, cliente.getGimnasio().getGymId(), Types.INTEGER);
 
             sentenciaLlamable.executeUpdate();
 
