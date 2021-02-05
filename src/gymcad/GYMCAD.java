@@ -7,17 +7,13 @@ package gymcad;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -104,7 +100,10 @@ public class GYMCAD {
                         + " Email y Telefono están debidamente rellenados.");
                     break;
                 
-                case 2292: e.setMensajeErrorUsuario("No se puede borrar un gimnasio que tiene asignado clientes.");
+                case 1: e.setMensajeErrorUsuario("El Email y Telefono ya existe por otro Gimnasio.");
+                    break;
+                    
+                case 2290: e.setMensajeErrorUsuario("El Telefono debe empezar por 9, 6 o 7. Y Recuerda que en el Email se pon @");
                     break;
                     
                 case 20005: e.setMensajeErrorUsuario("El correo introducido ya exite por un cliente.");
@@ -215,7 +214,8 @@ public class GYMCAD {
                 case 20005: e.setMensajeErrorUsuario("El correo introducido ya exite por un cliente.");
                     break;
                     
-                //case 2291 --> Foreign Key
+                case 2290: e.setMensajeErrorUsuario("El Telefono debe empezar por 9, 6 o 7. Y Recuerda que en el Email se pon @");
+                    break;
                 
                 default: e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
             }
@@ -353,12 +353,15 @@ public class GYMCAD {
             
             switch(ex.getErrorCode()){
                 
-                case 1407:e.setMensajeErrorUsuario("Comprueba que los campos Nombre, Apelllidos, Dni,  Email están debidamente rellenados.");
+                case 1400:e.setMensajeErrorUsuario("Comprueba que los campos Nombre, Apelllidos, Dni,  Email están debidamente rellenados.");
                     break;
                     
                 case 2291 : e.setMensajeErrorUsuario("Comprueba que el identificador del gimnasio es correcto.");
                 
                 case 20006: e.setMensajeErrorUsuario("El correo introducido ya exite por un gimnasio.");
+                    break;
+                    
+                case 2290: e.setMensajeErrorUsuario("Recuerda que en el Email se pone @");
                     break;
                 
                 default: e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
@@ -432,10 +435,12 @@ public class GYMCAD {
             
             switch(ex.getErrorCode()){
                 
-                case 1400:e.setMensajeErrorUsuario("Comprueba que los campos Nombre, Apellidos, Dni, y email están debidamente rellenados.");
+                case 1407:e.setMensajeErrorUsuario("Comprueba que los campos Nombre, Apellidos, Dni, y email están debidamente rellenados.");
                     break;
                 case 2291:e.setMensajeErrorUsuario("El gimnasio introducido no existe.");
-                    break;    
+                    break;   
+                case 2290: e.setMensajeErrorUsuario("Recuerda que en el Email se pone @");
+                    break;
                 case 20006: e.setMensajeErrorUsuario("El email introducido ya esta registra por otro usuario.");
                     break;
                 
@@ -483,8 +488,14 @@ public class GYMCAD {
                 c.setGimnasio(g);
             }
             
-            String toString = c.toString();
-            System.out.println(toString);
+            if(c.clienteId != null){
+                
+                String toString = c.toString();
+                System.out.println(toString);
+                
+            }else{
+                System.out.println("El cliente no existe");
+            }
             
             res.close();
             sentencia.close();
@@ -540,14 +551,6 @@ public class GYMCAD {
                 listaClientes.add(c);
             }
             
-            if(c.clienteId != null){
-                
-                String toString = c.toString();
-                System.out.println(toString);
-                
-            }else{
-                System.out.println("El cliente no existe");
-            }
             
             res.close();
             sentencia.close();
