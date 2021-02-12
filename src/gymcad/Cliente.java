@@ -109,10 +109,18 @@ public class Cliente {
         this.apellido2 = apellido2;
     }
 
+    /**
+     * Este método permite retornar el email del cliente almacenado
+     * @return retorna el email
+     */
     public String getEmailCliente() {
         return emailCliente;
     }
 
+    /**
+     * Este método permite modificar el email del cliente almacenado
+     * @param emailCliente indica el email que sera el remplazado
+     */
     public void setEmailCliente(String emailCliente) {
         this.emailCliente = emailCliente;
     }
@@ -120,7 +128,7 @@ public class Cliente {
 
     /**
      * Este método permite retornar el DNI del cliente almacenado
-     * @return retorna el DNI apellido
+     * @return retorna el DNI
      */
     public String getDni() {
         return dni;
@@ -134,10 +142,18 @@ public class Cliente {
         this.dni = dni;
     }
 
+    /**
+     * Este método permite retornar el Gimnasio del cliente almacenado
+     * @return retorna el Gimnasio 
+     */
     public Gimnasio getGimnasio() {
         return gimnasio;
     }
 
+    /**
+     * Este método permite modificar el Gimnasio del cliente almacenado
+     * @param gimnasio indica el Gimnasio que sera el remplazado
+     */
     public void setGimnasio(Gimnasio gimnasio) {
         this.gimnasio = gimnasio;
     }

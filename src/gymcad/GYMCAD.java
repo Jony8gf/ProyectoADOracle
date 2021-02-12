@@ -40,7 +40,7 @@ public class GYMCAD {
     private void conectar() throws ExcepcionGYM{
         
         try {
-            conexion = DriverManager.getConnection("jdbc:oracle:thin:@192.168.1.69:1521:test", "GYM", "kk");
+            conexion = DriverManager.getConnection("jdbc:oracle:thin:@192.168.1.125:1521:test", "GYM", "kk");
         }  catch (SQLException ex) {
             ExcepcionGYM e = new ExcepcionGYM();
             e.setCodigoError(ex.getErrorCode());
@@ -96,7 +96,7 @@ public class GYMCAD {
             
             switch(ex.getErrorCode()){
                 
-                case 1400:e.setMensajeErrorUsuario("Comprueba que los campos Nombre, Localidad, Código postal, Direccion de Calle,"
+                case 1400:e.setMensajeErrorUsuario("Comprueba que los campos Nombre, Localidad, Código postal, Dirección,"
                         + " Email y Telefono están debidamente rellenados.");
                     break;
                 
@@ -107,6 +107,9 @@ public class GYMCAD {
                     break;
                     
                 case 20005: e.setMensajeErrorUsuario("El correo introducido ya exite por un cliente.");
+                    break;
+                    
+                case 20026: e.setMensajeErrorUsuario("La dirección determinada por el conjunto de Localidad, Dirección y Código Postal ya esta registrada por un Gimnasio actualmente.");
                     break;
                 
                 default: e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
@@ -167,7 +170,7 @@ public class GYMCAD {
      * @param gimnasio Objeto que contien los datos nuevos a modificar en el registro, no se puede
      * modificar el campo gymId
      * @param gymId Identificador de Gimnasio a modificar
-     * @return 0 . No devuelve la cantidad de registros modificados
+     * @return Devuelve la cantidad de registros modificados
      * @throws ExcepcionGYM 
      */ 
     public int modificarGimnasio(Gimnasio gimnasio, Integer gymId) throws ExcepcionGYM{
@@ -214,7 +217,10 @@ public class GYMCAD {
                 case 20005: e.setMensajeErrorUsuario("El correo introducido ya exite por un cliente.");
                     break;
                     
-                case 2290: e.setMensajeErrorUsuario("El Telefono debe empezar por 9, 6 o 7. Y Recuerda que en el Email se pon @");
+                case 20026: e.setMensajeErrorUsuario("La dirección determinada por el conjunto de Localidad, Dirección y Código Postal ya esta registrada por un Gimnasio actualmente.");
+                    break;
+                    
+                case 2290: e.setMensajeErrorUsuario("El Telefono debe empezar por 9, 6 o 7. Y Recuerda que en el Email se pone @");
                     break;
                 
                 default: e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
@@ -226,6 +232,12 @@ public class GYMCAD {
         return 0;
     }
     
+    /**
+     * Mostrar un registro de la tabla Gimnasio
+     * @param gymId Identificador de Gimnasio a mostrar
+     * @return Devuelve un Objeto de tipo Gimnasio
+     * @throws ExcepcionGYM 
+     */ 
     public Gimnasio mostrarGimnasio(Integer gymId) throws ExcepcionGYM{
         
             conectar();
@@ -250,11 +262,7 @@ public class GYMCAD {
                 
             }
             
-            if(g.gymId != null){
-                
-                String toString = g.toString();
-                System.out.println(toString);
-            }else{
+            if(g.gymId == null){
                 System.out.println("El gimnasio no existe");
             }
             
@@ -271,10 +279,14 @@ public class GYMCAD {
             throw e;
         }
         
-        return null;
+        return g;
     }
     
-    
+    /**
+     * Mostrar todos los registros de la tabla Gimnasio
+     * @return Devuelve un ArrayList con Objetos de tipo Gimnasio
+     * @throws ExcepcionGYM 
+     */ 
     public ArrayList<Gimnasio> mostrarGimnasios() throws ExcepcionGYM{
         
             conectar();
@@ -298,9 +310,6 @@ public class GYMCAD {
                 listaGimnasios.add(g);
             }
             
-            String toString = listaGimnasios.toString();
-            System.out.println(toString);
-            
             res.close();
             sentencia.close();
             conexion.close();
@@ -318,8 +327,12 @@ public class GYMCAD {
     
     
     
-    
-    
+    /**
+     * Inserta un registro de la tabla Cliente
+     * @param cliente Objeto que contiene todos los datos e insertar en la tabla Cliente
+     * @return cantidad de registros insertados
+     * @throws gymcad.ExcepcionGYM Cuando se produzca un error con la base de datos
+     */
     public int insertarCliente(Cliente cliente) throws ExcepcionGYM{
         GYMCAD gym = new GYMCAD();
         conectar();
@@ -361,7 +374,7 @@ public class GYMCAD {
                 case 20006: e.setMensajeErrorUsuario("El correo introducido ya exite por un gimnasio.");
                     break;
                     
-                case 2290: e.setMensajeErrorUsuario("Recuerda que en el Email se pone @");
+                case 2290: e.setMensajeErrorUsuario("No se ha podido guardar el cliente, recuerda que en el Email se pone @");
                     break;
                 
                 default: e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
@@ -372,6 +385,13 @@ public class GYMCAD {
         return 0;
     }
     
+    /**
+    * Este método permite eliminar un registro de la tabla Cliente
+    * @param clienteId indica el valor del campo cliente_id
+    * @return Cantidad de registros eliminados
+    * @throws gymcad.ExcepcionGYM cuando se produzca cualquier error en la
+    * conexión de la base de datos.
+    */
     public int eliminarCliente(Integer clienteId) throws ExcepcionGYM{
         
         GYMCAD gym = new GYMCAD();
@@ -403,6 +423,14 @@ public class GYMCAD {
         return registrosAfectados;       
     }
     
+    /**
+     * Modifica un registro de la tabla Cliente
+     * @param cliente Objeto que contien los datos nuevos a modificar en el registro, no se puede
+     * modificar el campo clienteId
+     * @param clienteId Identificador de Cliente a modificar
+     * @return Devuelve la cantidad de registros modificados
+     * @throws ExcepcionGYM 
+     */ 
      public int modificarCliente(Cliente cliente, Integer clienteId) throws ExcepcionGYM{
          
         GYMCAD gym = new GYMCAD();
@@ -453,12 +481,17 @@ public class GYMCAD {
         return registrosAfectados;
     }
      
-     
+    /**
+     * Mostrar un registro de la tabla Cliente
+     * @param clienteId Identificador de Cliente a mostrar
+     * @return Devuelve un Objeto de tipo Cliente
+     * @throws ExcepcionGYM 
+     */ 
     public Cliente mostrarCliente(Integer clienteId) throws ExcepcionGYM{
         
             conectar();
             Cliente c = new Cliente();
-            String dql = "select * from gimnasio g, cliente c where g.gym_id = c.gym_id and c.cliente_id = "+clienteId;
+            String dql = "select * from cliente c ,gimnasio g where g.gym_id = c.gym_id and c.cliente_id = "+clienteId;
             
             
         try {
@@ -488,12 +521,7 @@ public class GYMCAD {
                 c.setGimnasio(g);
             }
             
-            if(c.clienteId != null){
-                
-                String toString = c.toString();
-                System.out.println(toString);
-                
-            }else{
+            if(c.clienteId == null){               
                 System.out.println("El cliente no existe");
             }
             
@@ -510,18 +538,21 @@ public class GYMCAD {
             throw e;
         }
         
-        return null;
+        return c;
     }
     
-    
+    /**
+     * Mostrar todos los registros de la tabla Cliente
+     * @return Devuelve un ArrayList con Objetos de tipo Cliente
+     * @throws ExcepcionGYM 
+     */ 
     public ArrayList<Cliente> mostrarClientes() throws ExcepcionGYM{
         
         
             conectar();
             ArrayList<Cliente> listaClientes = new  ArrayList();
-            String dql = "select * from gimnasio g, cliente c where g.gym_id = c.gym_id";
-            Cliente c = new Cliente();
-            Gimnasio g = new Gimnasio();
+            String dql = "select c.cliente_id clid, c.nombre_cliente clnom ,c.apellido1 clape1,c.apellido2 clape2, c.dni cldni, c.email_cliente clemail, g.gym_id gid , g.nombre_gimnasio gnom, g.localidad gloc, g.codigo_postal gcod, g.direccion_calle gdir, g.email_gimnasio gemail, g.telefono gtelf from gimnasio g, cliente c where g.gym_id = c.gym_id";
+            
             
             
         try {
@@ -530,28 +561,31 @@ public class GYMCAD {
             ResultSet res = sentencia.executeQuery(dql);
             
             while (res.next()) {
+                Cliente c = new Cliente();
+                Gimnasio g = new Gimnasio();
                 
-                c.setClienteId(res.getInt("cliente_id"));
-                c.setNombreCliente(res.getString("nombre_cliente"));
-                c.setApellido1(res.getString("apellido1"));
-                c.setApellido2(res.getString("apellido2"));
-                c.setDni(res.getString("dni"));
-                c.setEmailCliente(res.getString("email_cliente"));
+                c.setClienteId(res.getInt("clid"));
+                c.setNombreCliente(res.getString("clnom"));
+                c.setApellido1(res.getString("clape1"));
+                c.setApellido2(res.getString("clape2"));
+                c.setDni(res.getString("cldni"));
+                c.setEmailCliente(res.getString("clemail"));
                 
                 
-                g.setGymId(res.getInt("gym_id"));
-                g.setNombreGimnasio(res.getString("nombre_gimnasio"));  
-                g.setLocalidad(res.getString("localidad"));
-                g.setCodigoPostal(res.getInt("codigo_postal"));
-                g.setDireccionCalle(res.getString("direccion_calle"));
-                g.setEmailGimnasio(res.getString("email_gimnasio"));
-                g.setTelefono(res.getInt("telefono"));
+                g.setGymId(res.getInt("gid"));
+                g.setNombreGimnasio(res.getString("gnom"));  
+                g.setLocalidad(res.getString("gloc"));
+                g.setCodigoPostal(res.getInt("gcod"));
+                g.setDireccionCalle(res.getString("gdir"));
+                g.setEmailGimnasio(res.getString("gemail"));
+                g.setTelefono(res.getInt("gtelf"));
                 
                 c.setGimnasio(g);
+                
                 listaClientes.add(c);
             }
             
-            
+               
             res.close();
             sentencia.close();
             conexion.close();
